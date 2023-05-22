@@ -1056,8 +1056,44 @@ CONTAINS
 #if (EM_CORE==1)
      CASE (MSKFSCHEME)
           CALL wrf_debug(100,'in mskf_cps_mp')
-      
+!by xiaohui
+if ( 1 == 0 ) then
+
+             CALL wrf_debug(0, 'Call infer_run_cu')
+
+    CALL infer_run_cu(ite-its+1, jte-jts+1, kme-1-kms+1, kme-kms+1, &
+          pratec,                                                                                 &
+          nca,                                                                                    &
+          hfx,                                                                                    &   
+          ust,                                                                                    &
+          pblh,                                                                                   &   
+          u,                                                                                      &              
+          v,                                                                                      &
+          w,                                                                                      &
+          t,                                                                                      &
+          qv,                                                                                     &
+          p,                                                                                      &
+          th,                                                                                     &
+          dz8w,                                                                                   &
+          rho,                                                                                    &
+          pi,                                                                                     &
+          w0avg,                                                                                  &
+          rthcuten,                                                                               &
+          rqvcuten,                                                                               &
+          rqccuten,                                                                               &              
+          rqcruten,                                                                               &
+          rqicuten,                                                                               &
+          rqscuten)                
+
+             DO j=jts,jte
+             DO k=kts,kte          
+          raincv(i,j)=dt*pratec(i,j) 
+             ENDDO
+             ENDDO
+endif
+
 !by xiaohui      
+!if ( 1 == 0 ) then
           CALL MSKF_CPS(                                        &
                 U=u ,V=v ,TH=th ,T=t ,W=w ,RHO=rho              &
                ,CUDT=cudt_pass                                  &
@@ -1098,14 +1134,6 @@ CONTAINS
                ,EFCS=EFCS,EFIS=EFIS,EFSS=EFSS                   &
                ,RUCUTEN=RUCUTEN,RVCUTEN=RVCUTEN,XLAND=XLAND &
                ,pblh_2d=pblh_2d, u_3d=u_3d, w_3d=w_3d)       !JTR
-
-
-!by xiaohui
-!if ( 1 == 0 ) then
-
-             CALL wrf_debug(0, 'Call save_fortran_array')
-
-             CALL infer(
 
 !endif
 

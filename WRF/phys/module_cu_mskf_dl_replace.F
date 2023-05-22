@@ -47,6 +47,7 @@ MODULE module_cu_mskf_dl_replace
           integer(c_int), value :: shape_y
           integer(c_int), value :: shape_z
           integer(c_int), value :: shape_z_lev
+          
           REAL(c_float), DIMENSION( shape_x, shape_y ), INTENT(IN   )  :: pratec, &
                                                                           nca,    &
                                                                           hfx,    &
@@ -118,14 +119,6 @@ MODULE module_cu_mskf_dl_replace
           rqrcuten,                                                                               &
           rqicuten,                                                                               &
           rqscuten,                                                                               &
-          nca_out,                                                                                &
-          pratec_out,                                                                             &
-          rthcuten_out,                                                                           &
-          rqvcuten_out,                                                                           &
-          rqccuten_out,                                                                           &              
-          rqrcuten_out,                                                                           &
-          rqicuten_out,                                                                           &
-          rqscuten_out,                                                                           &
           filename) bind (c)
           use, intrinsic :: iso_c_binding
           implicit none
@@ -148,9 +141,7 @@ MODULE module_cu_mskf_dl_replace
                                                                           nca,    &
                                                                           hfx,    &
                                                                           ust,    &
-                                                                          pblh,   &
-                                                                          nca_out,&
-                                                                          pratec_out                               
+                                                                          pblh                              
 
           REAL(c_float), DIMENSION(kms:kme-1, ims:ime, jms:jme), INTENT(IN) :: u, &
                                                                                v, &
@@ -167,13 +158,7 @@ MODULE module_cu_mskf_dl_replace
                                                                                rqccuten, &
                                                                                rqrcuten, &
                                                                                rqicuten, &
-                                                                               rqscuten, &
-                                                                               rthcuten_out, &                                             
-                                                                               rqvcuten_out, &
-                                                                               rqccuten_out, &
-                                                                               rqrcuten_out, &
-                                                                               rqicuten_out, &
-                                                                               rqscuten_out         
+                                                                               rqscuten     
 
           REAL(c_float), DIMENSION(kms:kme, ims:ime, jms:jme), INTENT(IN) :: w
                                                                             
