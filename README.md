@@ -5,7 +5,7 @@ To run the WRF coupled with ML-based mskf cumulus schemes, you need to add files
 
 ### phys
 module_cu_mskf_dl_replace.F: 
-subroutine infer_init_cu: used to initialize the ML-based mskf cumulus scheme, this is called in main/wrf.F
+subroutine infer_init_cu: used to initialize the ML-based mskf cumulus scheme, this is called in main/wrf.F，the dl model to be called is in the test/em_real/model
 subrountine infer_run_cu: used to run the the ML-based mskf cumulus scheme
 subroutine save_fortran_array: used to save wrf variables into npy or npz files
 
@@ -24,3 +24,13 @@ depend.common: add dependencies for new files such as module_cu_mskf_dl_replace.
 Contains the files used for building the library in dl-inference-plugin, and the python script to run ML models within WRF_DL
 
 build_wrf_dl_plugin_debug_so.py: build python functions and generate the library in dl-inference-plugin
+
+mskf_data_preprocess_short.py: used to preprocess features, such as data normalization
+
+mskf_data_postprocess.py: used to postprocess variables, such as output data denormalization
+
+cu_utils.py: contain function used to calculate some auxiliary features
+
+config_wrf.py: wrf configurations
+
+config_norm.py: contains the norm_mapping used for data normalization
