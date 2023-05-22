@@ -3,64 +3,56 @@ ffibuilder = cffi.FFI()
 
 header = """
 extern void infer_init_cu(int);
-extern void infer_run_cu(int, int, int, int,     
-                      float*,                      
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*,
-                      float*,
+extern void infer_run_cu(int, int, int, int, \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*,  \
+                      float*, \
+                      float*, \
                       float*);
-
+    
 extern void save_fortran_array2(float*, int, int, char*);
 extern void save_fortran_array3(float*, int, int, int, char*);
-extern void save_fortran_array(int, int, int, int, int, int,   
-                      int, int, int, int, int, int,   
-                      float*, 
-                      float*,                      
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*, 
-                      float*,                       
-                      float*, 
-                      float*, 
-                      float*,
-                      float*,
-                      float*,
-                      float*,
-                      float*,                      
+extern void save_fortran_array(int, int, int, int, int, int, \
+                      int, int, int, int, int, int, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \
+                      float*, \                
                       char*);
 """
 
@@ -70,8 +62,8 @@ import numpy as np
 import datetime
 import my_infer_module
 from my_infer_module import OnnxEngine
-#import mskf_data_preprocess_short as mskfpre
-#import mskf_data_postprocess as mskfpost
+import mskf_data_preprocess_short as mskfpre
+import mskf_data_postprocess as mskfpost
 import os,threading
 import time
 
@@ -85,34 +77,34 @@ plugin_logger = my_infer_module.generate_logger(logger_file_name)
 def infer_init_cu(use_gpu=0):
     plugin_logger.info("InferInit begin")
     plugin_logger.info("ProcessID:{}, threadID:{}, threadName:{}".format(os.getpid(), threading.currentThread().ident, threading.currentThread().getName()))
-    #onnxrunner = OnnxEngine("./model/cu_v01.onnx", use_gpu)
-    #plugin_logger.info("Onnx provider :{}".format(onnxrunner.get_providers()) )
+    onnxrunner = OnnxEngine("./model/model_mskf.onnx", use_gpu)
+    plugin_logger.info("Onnx provider :{}".format(onnxrunner.get_providers()) )
     plugin_logger.info("InferInit finished")
-    #runner_list.append(onnxrunner)
+    runner_list.append(onnxrunner)
 
 @ffi.def_extern()
-def infer_run_cu(shape_x, shape_y, shape_z, shape_z_lev,    
-          pratec,                                                                                 &
-          nca,                                                                                    &
-          hfx,                                                                                    &   
-          ust,                                                                                    &
-          pblh,                                                                                   &   
-          u,                                                                                      &              
-          v,                                                                                      &
-          w,                                                                                      &
-          t,                                                                                      &
-          qv,                                                                                     &
-          p,                                                                                      &
-          th,                                                                                     &
-          dz8w,                                                                                   &
-          rho,                                                                                    &
-          pi,                                                                                     &
-          w0avg,                                                                                  &
-          rthcuten,                                                                               &
-          rqvcuten,                                                                               &
-          rqccuten,                                                                               &              
-          rqcruten,                                                                               &
-          rqicuten,                                                                               &
+def infer_run_cu(shape_x, shape_y, shape_z, shape_z_lev,\
+          pratec, \
+          nca,    \
+          hfx,    \
+          ust,    \
+          pblh,  \
+          u,      \
+          v,      \
+          w,      \
+          t,      \
+          qv,     \
+          p,      \
+          th,     \
+          dz8w,   \
+          rho,    \
+          pi,     \
+          w0avg,  \
+          rthcuten, \
+          rqvcuten, \
+          rqccuten, \
+          rqcruten, \
+          rqicuten, \
           rqscuten):
 
     plugin_logger.info("Infer Run start")
@@ -166,85 +158,91 @@ def infer_run_cu(shape_x, shape_y, shape_z, shape_z_lev,
     total_time = data_load_end_time - data_load_begin_time
 
     plugin_logger.info("load data takes {:.4f}s".format(total_time))
-    
-    plugin_logger.info("Infer Run, before mskf_preprocess")
-    
-    data_preprocess_begin_time = time.time()
-    
-#     feature, auxiliary_feature, coszen_array = mskfpre.mskf_preprocess(mskf_array, _array, \
-#     landfrac_array, icefrac_array, snow_array, solcon_array, tsfc_array, emis_array, \
-#     play_array, plev_array, tlay_array, tlev_array, cldfrac_array, o3vmr_array, \
-#     qc_array, qg_array, qr_array, qi_array, qs_array, qv_array)
 
-#     data_preprocess_end_time = time.time()
-#     total_time = data_preprocess_end_time - data_preprocess_begin_time
-#     plugin_logger.info("preprocess data takes {:.4f}s".format(total_time))
-    
-#     plugin_logger.info("Start inference")
-#     plugin_logger.info("feature shape is {}".format(feature.shape))
-    
-#     inference_begin_time = time.time()
-    
-#     onnxrunner = runner_list[0]
-#     output =None
-#     try:
-#       output = onnxrunner([feature])
-#     except Exception as inst :
-#         plugin_logger.info(f"inference exception:{inst}")
-
-    
-#     inference_end_time = time.time()    
-#     total_time = inference_end_time - inference_begin_time    
-#     #plugin_logger.info("inference takes {:.4f}s".format(total_time))
-
-#     plugin_logger.info("Infer Run finished ")
-    
-#     get_hr_begin_time = time.time()    
-#     swhr_res, lwhr_res, swuflx_predict, swdflx_predict, lwuflx_predict, lwdflx_predict\
-#     = mskfpost.rrtmg_get_hr(output, auxiliary_feature, coszen_array)
-    
-#     get_hr_end_time = time.time()    
-#     total_time = get_hr_end_time - get_hr_begin_time    
-#     #plugin_logger.info("get_hr takes {:.4f}s".format(total_time))
-    
-#     #plugin_logger.info("Infer Run, after mskf_post ")
-
-#     swhr_res = swhr_res.reshape((len_2d, shape_z))
-#     lwhr_res = lwhr_res.reshape((len_2d, shape_z))
-#     swuflx_predict = swuflx_predict.reshape((-1, ))
-#     swdflx_predict = swdflx_predict.reshape((-1, ))
-#     lwuflx_predict = lwuflx_predict.reshape((-1, ))
-#     lwdflx_predict = lwdflx_predict.reshape((-1, ))
-    
-#     np.copyto(swuflx_array, swuflx_predict)
-#     np.copyto(swdflx_array, swdflx_predict)
-#     np.copyto(lwuflx_array, lwuflx_predict)
-#     np.copyto(lwdflx_array, lwdflx_predict)
-
-#     #Convert sw and sw heating rate to wrf required tendency
-#     rthratensw_tmp = np.zeros((len_2d, shape_z_lev))
-#     rthratenlw_tmp = np.zeros((len_2d, shape_z_lev))    
-#     rthratensw_tmp[:, 0:-1] = swhr_res/(pi_array[:, 0:-1]*86400)  
-#     rthratenlw_tmp[:, 0:-1] = lwhr_res/(pi_array[:, 0:-1]*86400) 
-#     rthraten_tmp = rthratensw_tmp + rthratenlw_tmp
-        
-#     rthraten_tmp = rthraten_tmp.reshape((-1,))
-#     rthratensw_tmp = rthratensw_tmp.reshape((-1,))
-#     rthratenlw_tmp = rthratenlw_tmp.reshape((-1,))
-    
-#     np.copyto(rthraten_array, rthraten_tmp)
-#     np.copyto(rthratensw_array, rthratensw_tmp)
-#     np.copyto(rthratenlw_array, rthratenlw_tmp)   
-
-    #'''
-    np.savez('infer.npz', pratec=pratec_array, nca=nca_array, hfx=ust_array, \
+    np.savez('input.npz', pratec=pratec_array, nca=nca_array, hfx=ust_array, \
              pblh=pblh_array, u=u_array, v=v_array, \
 	         w=w_array, t=t_array, qv=qv_array, p=p_array, \
 	         th=th_array, dz8w=dz8w_array, rho=rho_array, pi=pi_array, w0avg=w0avg_array, \
 	         rthcuten=rthcuten_array, rqvcuten=rqvcuten_array, \
              rqccuten=rqccuten_array, rqrcuten=rqrcuten_array, \
-             rqicuten=rqicuten_array, rqscuten=rqscuten_array,)            
-    #'''
+             rqicuten=rqicuten_array, rqscuten=rqscuten_array) 
+        
+    plugin_logger.info("Infer Run, before mskf_preprocess")
+    
+    data_preprocess_begin_time = time.time()
+    
+    feature, feature_all_variable = mskfpre.mskf_preprocess(pratec_array, nca_array, hfx_array, ust_array, \
+    pblh_array, u_array, v_array, w_array, t_array, qv_array, \
+    p_array, th_array, dz8w_array, rho_array, pi_array, w0avg_array, \
+    rthcuten_array, rqvcuten_array, rqccuten_array, rqrcuten_array, rqicuten_array, rqscuten_array)
+
+    data_preprocess_end_time = time.time()
+    total_time = data_preprocess_end_time - data_preprocess_begin_time
+    plugin_logger.info("preprocess data takes {:.4f}s".format(total_time))
+    
+    plugin_logger.info("Start inference")
+    plugin_logger.info("feature shape is {}".format(feature.shape))
+    
+    inference_begin_time = time.time()
+    
+    onnxrunner = runner_list[0]
+    predicts = []
+    predicts_cf = []
+    try:
+        predicts_cf, predicts = onnxrunner([feature])
+    except Exception as inst :
+        plugin_logger.info(f"inference exception:{inst}")
+    
+    inference_end_time = time.time()    
+    total_time = inference_end_time - inference_begin_time    
+    plugin_logger.info("inference takes {:.4f}s".format(total_time))
+
+    plugin_logger.info("Infer Run finished ")
+
+    label_single_height_variable = ['nca', 'pratec']
+    label_multi_height_variable = ['rthcuten', 'rqvcuten', 'rqccuten', 'rqrcuten', 'rqicuten', 'rqscuten']
+
+    label_all_variable_reg = label_single_height_variable + label_multi_height_variable
+    
+    norm_method = 'abs-max'
+    
+    predicts_unnorm = mskfpost.unnormalized(
+    predicts, norm_mapping, label_all_variable_reg, norm_method)    
+        
+    plugin_logger.info("Infer Run, after mskf_post ")
+
+    index_w0avg_output = feature_all_variable.index('w0avg_output')
+    w0avg_predict = feature[:, index_w0avg_output, :].reshape((-1, ))
+    
+    nca_predict = predicts_unnorm[:, 1, 0].reshape((-1, ))
+    pratec_predict = predicts_unnorm[:, 2, 0].reshape((-1, ))
+   
+    plugin_logger.info("Copy data to output variables")
+    
+    np.copyto(nca_array, nca_predict)
+    np.copyto(pratec_array, pratec_predict)
+    np.copyto(w0avg_array, w0avg_predict)
+    
+    rthcuten_predict = predicts_unnorm[:, 3, :].reshape((-1, ))
+    rqvcuten_predict = predicts_unnorm[:, 4, :].reshape((-1, ))
+    rqccuten_predict = predicts_unnorm[:, 5, :].reshape((-1, ))
+    rqrcuten_predict = predicts_unnorm[:, 6, :].reshape((-1, ))
+    rqicuten_predict = predicts_unnorm[:, 7, :].reshape((-1, ))
+    rqscuten_predict = predicts_unnorm[:, 8, :].reshape((-1, ))
+    
+    np.copyto(rthcuten_array, rthcuten_predict)
+    np.copyto(rqvcuten_array, rqvcuten_predict)
+    np.copyto(rqccuten_array, rqccuten_predict)
+    np.copyto(rqrcuten_array, rqrcuten_predict)
+    np.copyto(rqicuten_array, rqicuten_predict)
+    np.copyto(rqscuten_array, rqscuten_predict)
+
+    '''
+    np.savez('output.npz', pratec=pratec_array, nca=nca_array, w0avg=w0avg_array, \
+	         rthcuten=rthcuten_array, rqvcuten=rqvcuten_array, \
+             rqccuten=rqccuten_array, rqrcuten=rqrcuten_array, \
+             rqicuten=rqicuten_array, rqscuten=rqscuten_array)            
+    '''
     
         
 @ffi.def_extern()
@@ -252,24 +250,24 @@ def save_fortran_array2(data_ptr, in_x, in_y, filename):
     filenam = ffi.string(filename).decode('UTF-8')
     filenam = filenam.replace(" ", "")
 
-#    plugin_logger.info("save to {}".format(filenam))    
+    plugin_logger.info("save to {}".format(filenam))    
     
-    n = 5
-    in_x_new = in_x - 2*n - 1
-    in_y_new = in_y - 2*n - 1
+    # n = 5
+    # in_x_new = in_x - 2*n - 1
+    # in_y_new = in_y - 2*n - 1
         
-    len_2d = in_x_new * in_y_new      
+    # len_2d = in_x_new * in_y_new      
         
-    data_array = my_infer_module.PtrAsarray(ffi, data_ptr, (in_x, in_y), (n, len_2d))   
+    data_array = my_infer_module.PtrAsarray(ffi, data_ptr, (in_x, in_y))   
     
     np.save(filenam, data_array)
     
 @ffi.def_extern()
 def save_fortran_array3(data_ptr, in_x, in_y, in_z, filename):    
-#    plugin_logger.info("save to {}".format(filenam))        
-
     filenam = ffi.string(filename).decode('UTF-8')
     filenam = filenam.replace(" ", "")    
+
+    plugin_logger.info("save to {}".format(filenam))        
         
 #    n = 5
 #    in_x_new = in_x - 2*n - 1
@@ -304,14 +302,6 @@ def save_fortran_array(ims, ime, jms, jme, kms, kme,
              rqrcuten,                                                                               &
              rqicuten,                                                                               &
              rqscuten,                                                                               &
-             nca_out,                                                                                &
-             pratec_out,                                                                             &
-             rthcuten_out,                                                                           &
-             rqvcuten_out,                                                                           &
-             rqccuten_out,                                                                           &              
-             rqrcuten_out,                                                                           &
-             rqicuten_out,                                                                           &
-             rqscuten_out
              filename):   
         
     shape_x = ime-ims+1
@@ -381,25 +371,7 @@ def save_fortran_array(ims, ime, jms, jme, kms, kme,
                                             (n, len_2d, shape_z))
 
     rqscuten_array = my_infer_module.PtrAsarray(ffi, rqscuten, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-             
-    rthcuten_out_array = my_infer_module.PtrAsarray(ffi, rthcuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-
-    rqvcuten_out_array = my_infer_module.PtrAsarray(ffi, rqvcuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-
-    rqcuten_out_array = my_infer_module.PtrAsarray(ffi, rqccuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-        
-    rqrcuten_out_array = my_infer_module.PtrAsarray(ffi, rqrcuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-
-    rqicuten_out_array = my_infer_module.PtrAsarray(ffi, rqicuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
-
-    rqscuten_out_array = my_infer_module.PtrAsarray(ffi, rqscuten_out, (shape_y, shape_x, shape_z), \
-                                            (n, len_2d, shape_z))
+                                            (n, len_2d, shape_z))            
                      
     w_array = my_infer_module.PtrAsarray(ffi, w, (shape_y, shape_x, shape_z_lev), \
                                             (n, len_2d, shape_z_lev))    
@@ -411,11 +383,7 @@ def save_fortran_array(ims, ime, jms, jme, kms, kme,
 	         qi=qi_array, qs=qs_array, qg=qg_array, o3vmr=o3vmr_array, cldfrac=cldfrac_array, \
              w0avg=w0avg_array, rthcuten=rthcuten_array, rqvcuten=rqvcuten_array, \
              rqccuten=rqccuten_array, rqrcuten=rqrcuten_array, rqicuten=rqicuten_array,\
-             rqscuten=rqscuten_array, nca_out=nca_out_array, \
-             pratec_out=pratec_out_array, rthcuten_out=rthcuten_out_array, \
-             rqvcuten_out=rqvcuten_out_array, rqccuten_out=rqccuten_out_array, \
-             rqrcuten_out=rqrcuten_out_array, rqicuten_out=rqicuten_out_array,\
-             rqscuten_out=rqscuten_out_array, \
+             rqscuten=rqscuten_array, \
              its=its, ite=ite, jts=jts, jte=jte, kts=kts, kte=kte, \
              ims=ims, ime=ime, jms=jms, jme=jme, kms=kms, kme=kme)
     

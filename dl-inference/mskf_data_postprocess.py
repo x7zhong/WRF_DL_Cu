@@ -11,6 +11,28 @@ def unnormalized(results, norm_mapping, index_mapping):
 
     return results_unnorm
 
+def unnormalized(predicts, norm_mapping, label_all_variable, norm_method):
+    predicts_unnorm = np.zeros(predicts.shape)
+    
+    for index, variable_name in enumerate(label_all_variable):
+        
+        if norm_method == 'z-score':                                
+            
+            predicts_unnorm[:, index, :] = predicts[:, index, :] * \
+            norm_mapping[variable_name]["scale"] + \
+            norm_mapping[variable_name]["mean"]
+            
+        elif norm_method == 'min-max':                                
+            predicts_unnorm[:, index, :] = predicts[:, index, :] * \
+            norm_mapping[variable_name]["max"]
+
+        elif norm_method == 'abs-max':   
+            predicts_unnorm[:, index, :] = predicts[:, index, :] * \
+            max( abs(norm_mapping[variable_name]['max']), \
+            abs(norm_mapping[variable_name]['min']) )
+            
+    return predicts_unnorm
+
 def get_heat_rate(predicts, pressure):
     
     swhr_predict = calculate_hr(
