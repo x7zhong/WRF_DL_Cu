@@ -564,8 +564,8 @@ module_physics_init.o : \
 	        module_cu_g3.o                  \
 		module_cu_kfeta.o		\
 		module_cu_mskf.o		\
-		module_cu_mskf_dl_replace.o  \		
-		module_cu_bmj.o			\
+		module_cu_mskf_dl_replace.o  \
+                module_cu_bmj.o			\
 		module_cu_gd.o			\
 		module_cu_ksas.o		\
 		module_cu_nsas.o		\
@@ -667,8 +667,8 @@ module_cumulus_driver.o: \
 		module_cu_tiedtke.o \
 		module_cu_ntiedtke.o \
 		module_cu_mskf.o \
-		module_cu_mskf_dl_replace.o  \		
-		module_cu_kfcup.o \
+                module_cu_mskf_dl_replace.o  \
+                module_cu_kfcup.o \
 		../frame/module_state_description.o \
 		../frame/module_configure.o \
 		../frame/module_domain.o \

@@ -42,7 +42,7 @@ PROGRAM wrf
 #endif
 !by xiaohui
 print *, 'call infer_init_cu in wrf.F'
-call infer_init_cu(-1)
+call infer_init_cu(0)
 
   ! WRF model time-stepping.  Calls integrate().  
 #if ( WRFPLUS == 1 )
