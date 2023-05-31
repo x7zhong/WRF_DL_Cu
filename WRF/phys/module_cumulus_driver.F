@@ -206,7 +206,7 @@ CONTAINS
    USE module_wrf_error , ONLY : wrf_err_message
 
 !by xiaohui
-   USE module_cu_mskf_dl_replace
+   USE module_cu_mskf_dl
 
    !  This driver calls subroutines for the cumulus parameterizations.
    !
@@ -1057,43 +1057,31 @@ CONTAINS
      CASE (MSKFSCHEME)
           CALL wrf_debug(100,'in mskf_cps_mp')
 !by xiaohui
-if ( 1 == 0 ) then
+!if ( 1 == 0 ) then
 
-             CALL wrf_debug(0, 'Call infer_run_cu')
+             CALL wrf_debug(0, 'Call inference_cu')
 
-    CALL infer_run_cu(ite-its+1, jte-jts+1, kme-1-kms+1, kme-kms+1, &
-          pratec,                                                                                 &
-          nca,                                                                                    &
-          hfx,                                                                                    &   
-          ust,                                                                                    &
-          pblh,                                                                                   &   
-          u,                                                                                      &              
-          v,                                                                                      &
-          w,                                                                                      &
-          t,                                                                                      &
-          qv,                                                                                     &
-          p,                                                                                      &
-          th,                                                                                     &
-          dz8w,                                                                                   &
-          rho,                                                                                    &
-          pi,                                                                                     &
-          w0avg,                                                                                  &
-          rthcuten,                                                                               &
-          rqvcuten,                                                                               &
-          rqccuten,                                                                               &              
-          rqcruten,                                                                               &
-          rqicuten,                                                                               &
-          rqscuten)                
+          CALL inference_cu(                                    &
+               IDS=ids,IDE=ide,JDS=jds,JDE=jde,KDS=kds,KDE=kde &
+               ,IMS=ims,IME=ime,JMS=jms,JME=jme,KMS=kms,KME=kme &
+               ,ITS=its,ITE=ite,JTS=jts,JTE=jte,KTS=kts,KTE=kte &    
+               ,DT=dt, DX=dx, CUDT=cudt_pass                    &                     
+               ,U=u ,V=v, TH=th ,T=t ,W=w ,RHO=rho              &
+               ,RAINCV=raincv, PRATEC=tmppratec, NCA=nca        &
+               ,DZ8W=dz8w                                       &
+               ,p=p, PI=pi ,W0AVG=W0AVG                         &
+               ,CU_ACT_FLAG=cu_act_flag                         &
+               ,QV=qv_curr                                      &
+               ,RTHCUTEN=rthcuten                               &
+               ,RQVCUTEN=rqvcuten ,RQCCUTEN=rqccuten            &
+               ,RQRCUTEN=rqrcuten ,RQICUTEN=rqicuten            &
+               ,RQSCUTEN=rqscuten                               &
+               ,ZOL=zol,HFX=hfx,UST=ust,PBLH=pblh               )       !JTR
 
-             DO j=jts,jte
-             DO k=kts,kte          
-          raincv(i,j)=dt*pratec(i,j) 
-             ENDDO
-             ENDDO
-endif
+!endif
 
 !by xiaohui      
-!if ( 1 == 0 ) then
+if ( 1 == 0 ) then
           CALL MSKF_CPS(                                        &
                 U=u ,V=v ,TH=th ,T=t ,W=w ,RHO=rho              &
                ,CUDT=cudt_pass                                  &
@@ -1132,10 +1120,9 @@ endif
                ,AEROCU=aerocu,NO_SRC_TYPES_CU=no_src_types_cu   &
                ,AERCU_FCT=aercu_fct,AERCU_OPT=aercu_opt        &
                ,EFCS=EFCS,EFIS=EFIS,EFSS=EFSS                   &
-               ,RUCUTEN=RUCUTEN,RVCUTEN=RVCUTEN,XLAND=XLAND &
-               ,pblh_2d=pblh_2d, u_3d=u_3d, w_3d=w_3d)       !JTR
+               ,RUCUTEN=RUCUTEN,RVCUTEN=RVCUTEN,XLAND=XLAND)       !JTR
 
-!endif
+endif
 
 #endif  
  

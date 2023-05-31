@@ -48,9 +48,7 @@ MODULE module_cu_mskf_dl_replace
           integer(c_int), value :: shape_z
           integer(c_int), value :: shape_z_lev
           
-          REAL(c_float), DIMENSION( shape_x, shape_y ), INTENT(IN   )  :: pratec, &
-                                                                          nca,    &
-                                                                          hfx,    &
+          REAL(c_float), DIMENSION( shape_x, shape_y ), INTENT(IN   )  :: hfx,    &
                                                                           ust,    &
                                                                           pblh    
 
@@ -64,14 +62,19 @@ MODULE module_cu_mskf_dl_replace
                                                                              th, &
                                                                              dz8w, &
                                                                              rho, &
-                                                                             pi, &
-                                                                             w0avg, &
+                                                                             pi
+
+          REAL(c_float), DIMENSION( shape_x, shape_y ), INTENT(INOUT   )  :: pratec, &
+                                                                             nca
+
+          REAL(c_float), DIMENSION(shape_z, shape_x, shape_y), INTENT(INOUT) :: w0avg, &
                                                                              rthcuten, &
                                                                              rqvcuten, &
                                                                              rqccuten, &
                                                                              rqrcuten, &
                                                                              rqicuten, &
                                                                              rqscuten
+
 
     end subroutine infer_run_cu
 

@@ -65,6 +65,7 @@ MODULES = \
 	module_cu_bmj.o \
 	module_cu_kfeta.o \
 	module_cu_mskf.o \
+	module_cu_mskf_dl.o \
 	module_cu_mskf_dl_replace.o \
 	module_cu_tiedtke.o\
 	module_cu_ntiedtke.o\
