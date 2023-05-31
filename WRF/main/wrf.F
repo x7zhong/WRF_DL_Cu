@@ -8,11 +8,10 @@ PROGRAM wrf
    USE module_wrf_top, only : config_flags, wrf_adtl_check, &
                               wrf_run_tl_standalone, wrf_run_ad_standalone
    USE module_state_description, only : dyn_em, dyn_em_tl, dyn_em_ad
+#endif
 
 !by xiaohui
    USE module_cu_mskf_dl_replace, only : infer_init_cu
-
-#endif
 
 !<DESCRIPTION>
 ! Main program of WRF model.  Responsible for starting up the model, reading in (and
