@@ -98,6 +98,8 @@ def PtrAsarray(ffi, ptr, shape, shape_new = [], **kwargs):
         if len(shape) == 2:
             a = a.reshape(shape)
             a = a[shape_new[0]:-(shape_new[0]+1), shape_new[0]:-(shape_new[0]+1)]
+            
+            #a = a.T
             a = a.reshape((shape_new[1], ))
             
         elif len(shape) == 3:

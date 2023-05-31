@@ -46,7 +46,7 @@ config_wrf.num_sim = 9
 # config_wrf.num_sim = 5
 
 #Number of files per simulation for training
-config_wrf.num_train = int((config_wrf.train_hours * 60)/config_wrf.output_interval)
+config_wrf.num_train = int((config_wrf.train_hours * 60)/config_wrf.output_interval) + 1
 #Number of files per simulation for testing
 config_wrf.num_test = int((config_wrf.test_hours * 60)/config_wrf.output_interval)
 
@@ -120,17 +120,19 @@ config_wrf.label_all_variable = config_wrf.label_single_height_variable + \
 config_wrf.flag_trigger_consistency = 0
 config_wrf.label_all_variable_reg = config_wrf.label_all_variable.copy()
 config_wrf.output_channel_cf = 0
+config_wrf.label_all_variable_cf = []
 if 'trigger' in config_wrf.label_all_variable:
     config_wrf.flag_trigger_consistency = 1
     config_wrf.label_all_variable_reg.remove('trigger')
 
     config_wrf.output_channel_cf = len(config_wrf.label_classification_variable_possible)
-
+    config_wrf.label_all_variable_cf = ['trigger']
+    
 config_wrf.weight_loss = {}
 for varName in config_wrf.label_all_possible_variable:
     config_wrf.weight_loss[varName] = 1
 
-    config_wrf.index_trigger_input = config_wrf.feature_all_variable.index('trigger')        
+config_wrf.index_trigger_input = config_wrf.feature_all_variable.index('trigger')        
     
 #output_channel specifies the number of output channels
 config_wrf.output_channel = len(config_wrf.label_all_variable_reg)
@@ -162,9 +164,9 @@ if 'trigger' in config_wrf.label_all_variable:
         # config_wrf.error_train = ['BCE' , 'mse_trigger']            
         
 
-#filter specify whether filter variables based on the values of trigger
-config_wrf.flag_filter = 0
-# config_wrf.flag_filter = 1
+#filter specify whether filter regression variables based on the GT values of trigger
+# config_wrf.flag_filter = 0
+config_wrf.flag_filter = 1
     
 config_wrf.filter_variable = 'trigger'
 config_wrf.filter_threshold = 0.001
@@ -192,7 +194,7 @@ config_wrf.pathName_norm = '/home/yux/Code/Python/AI_and_Cu/utils/pathName_{}.np
 if config_wrf.norm_method == 'abs-max':
     config_wrf.pathName_norm = '/home/yux/Code/Python/AI_and_Cu/utils/pathName_min-max.npy'
     
-config_wrf.pathName_train_dict_in = '/home/yux/Code/Python/AI_and_Cu/utils/train_dict_in.npy'   
+config_wrf.pathName_train_dict_in = '/home/yux/Code/Python/AI_and_Cu/utils/train_dict_in.npy'
 config_wrf.pathName_train_dict_out = '/home/yux/Code/Python/AI_and_Cu/utils/train_dict_out.npy'   
 config_wrf.pathName_test_dict_in = '/home/yux/Code/Python/AI_and_Cu/utils/test_dict_in.npy'
 config_wrf.pathName_test_dict_out = '/home/yux/Code/Python/AI_and_Cu/utils/test_dict_out.npy'

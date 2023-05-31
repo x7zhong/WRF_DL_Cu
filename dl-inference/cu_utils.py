@@ -7,42 +7,72 @@ Created on Fri Mar 31 17:05:46 2023
 """
 
 import numpy as np
-import torch
 
+import logging
+
+def generate_logger(log_file_path):
+    #Create the logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    #Create handler for logging data to a file
+    logger_handler = logging.FileHandler(log_file_path, mode = 'a')
+    logger_handler.setLevel(logging.INFO)
+
+    #Define format for handler
+    formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+    logger_handler.setFormatter(formatter)
+
+    #Add logger in the handler
+    logger.addHandler(logger_handler)
+
+    return logger
+
+#Apply this before unnormalize
 #for the grid points where the input nca is greater than 0, the nca and tendency is not changed.
 def mskf_constraint(feature, predict, ListofVar, config_wrf):
     
+    # logger = generate_logger("./cu_util.log")
+
+    # logger.info("Start mskf_constraint")
+    
     trigger_input = feature[:, config_wrf.index_trigger_input, 0]
     
-    index = torch.where(trigger_input > 0.0001)[0]
+    index = np.where(trigger_input > 0.0001)[0]
 
-    for i, varName in enumerate(ListofVar):        
-        if varName  == 'trigger':
-            if len(predict.shape) == 2:
-                predict[index, i] = trigger_input[index]
+    if len(index) > 0:
+        
+        for i, varName in enumerate(ListofVar):        
+            if varName  == 'trigger':
+                if len(predict.shape) == 2:
+                    predict[index, i] = trigger_input[index]
+                    
+                elif len(predict.shape) == 3:
+                    predict[index, i, 0] = trigger_input[index]
+                      
+            elif varName  == 'pratec':
+                if len(predict.shape) == 2:
+                    predict[index, i][predict[index, i] < 0] = 0
+                    
+                elif len(predict.shape) == 3:
+                    predict[index, i, :][predict[index, i, :] < 0] = 0            
+                    
+            else:
+                index_feature = config_wrf.feature_all_variable.index(varName)
                 
-            elif len(predict.shape) == 3:
-                predict[index, i, 0] = trigger_input[index]
-                            
-        else:
-            index_feature = config_wrf.feature_all_variable.index(varName)
-            
-            for level in range(predict.shape[2]):
-                predict[index, i, level] = feature[index, index_feature, level]
-
-            # if varName  == 'nca':
-            #     #nca must be equal to integer multiples of time step
-            #     # predict[index, i, :] = predict[index, i, :].to(torch.int)
-            #     predict[index, i, :] = predict[index, i, :]
-    
+                for level in range(predict.shape[2]):
+                    predict[index, i, level] = feature[index, index_feature, level]
+        
     return predict
     
+#Apply this before unnormalize
+#for the grid points where the predicted trigger is 0, all the other output is 0
 def trigger_consistency(predict, predicts_cf, config_wrf):
     
-    trigger_predict = predicts_cf[:, 0]
+    trigger_predict = predicts_cf[:, 0] > 0.5
     
     #For those grid points where it is not trigger, make sure they are 0.
-    index = torch.where(trigger_predict < 0.0001)[0]
+    index = np.where(trigger_predict < 0.0001)[0]
 
     for i, varName in enumerate(config_wrf.label_all_variable_reg):
         if len(predict.shape) == 2:
@@ -53,6 +83,17 @@ def trigger_consistency(predict, predicts_cf, config_wrf):
                 predict[index, i, level] = 0            
 
     return predict
+
+#Apply this after unnormalize
+def nca_constraint(predicts_unnorm, ListofVar):
+    
+    index_nca = ListofVar.index('nca')
+    
+    #nca must be equal to integer multiples of time step
+    predicts_unnorm[:, index_nca, :][predicts_unnorm[:, index_nca, :]<0.01] = 0.0    
+    predicts_unnorm[:, index_nca, :] = predicts_unnorm[:, index_nca, :].astype(int)
+
+    return predicts_unnorm
 
 #saturation vapor pressure calculation
 #Input unit is K, output unit is Pa

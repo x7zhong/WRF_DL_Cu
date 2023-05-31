@@ -9,8 +9,8 @@ Created on Sun Mar 19 19:53:23 2023
 import os
 import numpy as np
 
-# from config_wrf import config_wrf
-from utils.config_wrf import config_wrf
+from config_wrf import config_wrf
+#from utils.config_wrf import config_wrf
 
 # ListofVar = ['xland', 'u', 'v', 'w', 't', 'q', 'p', 'rho', 'pi', 'th', 'dz8w', \
 #              'dtt', 'dqv', 'dqc', 'dqr', 'dqi', 'dqs', 'pratec']
