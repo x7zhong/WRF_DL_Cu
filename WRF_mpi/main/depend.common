@@ -1069,6 +1069,7 @@ init_modules.o: ../frame/module_configure.o ../frame/module_driver_constants.o \
 		../frame/module_domain.o ../frame/module_machine.o \
 		../frame/module_nesting.o ../frame/module_timing.o \
 		../frame/module_tiles.o ../frame/module_io.o \
+                ../frame/module_infer_cu.o \
 		../frame/module_io_quilt.o ../frame/module_dm.o \
 		../external/io_int/io_int.o \
 		 module_io_wrf.o module_bc.o module_model_constants.o  \
@@ -1334,6 +1335,7 @@ module_wrf_top.o: ../frame/module_machine.o \
                   ../frame/module_configure.o \
                   ../frame/module_timing.o \
                   ../frame/module_wrf_error.o \
+                  ../frame/module_infer_cu.o \                  
                   ../frame/module_state_description.o \
                   ../frame/module_cpl.o \
                   $(ESMF_MOD_DEPENDENCE)
