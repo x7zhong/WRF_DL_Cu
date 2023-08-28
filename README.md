@@ -1,3 +1,5 @@
+[![DOI](https://sandbox.zenodo.org/badge/605852790.svg)](https://sandbox.zenodo.org/badge/latestdoi/605852790)
+
 # Code description:
 ## WRF
 Contains the files that are different from the original WRF v4.3 files and used for implementing the WRF-ML coupler.
