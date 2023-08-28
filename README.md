@@ -1,4 +1,4 @@
-[![DOI](https://sandbox.zenodo.org/badge/605852790.svg)](https://sandbox.zenodo.org/badge/latestdoi/605852790)
+[![DOI](https://zenodo.org/badge/605852790.svg)](https://zenodo.org/badge/latestdoi/605852790)
 
 # Code description:
 ## WRF
