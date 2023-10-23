@@ -36,3 +36,9 @@ cu_utils.py: contain function used to calculate some auxiliary features
 config_wrf.py: wrf configurations
 
 config_norm.py: contains the norm_mapping used for data normalization
+
+### model
+Contains the onnx model, and the python script to convert model to onnx.
+
+## AI_and_Cu
+Contains the python scripts for training and evaluating ML models, and for generating figures.
